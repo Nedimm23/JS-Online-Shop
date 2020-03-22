@@ -9,16 +9,21 @@ const client = contentful.createClient({
 const cartBtn = document.querySelector(".cart-btn");
 const closeCartBtn = document.querySelector(".close-cart");
 const clearCartBtn = document.querySelector(".clear-cart");
+
 const cartDOM = document.querySelector(".cart");
 const cartOverlay = document.querySelector(".cart-overlay");
 const cartItems = document.querySelector(".cart-items");
 const cartTotal = document.querySelector(".cart-total");
 const cartContent = document.querySelector(".cart-content");
-const checkoutItem = document.querySelector(".checkout-items");
-const checkoutPrice = document.querySelector(".price");
-const modalContent = document.querySelector(".modal-content");
-const modal = document.getElementById("myModal");
+
 const checkoutDOM = document.querySelector(".modal");
+const modal = document.getElementById("myModal");
+const checkoutItems = document.querySelector(".checkout-items");
+const checkoutTotal = document.querySelector(".checkout-total");
+const modalContent = document.querySelector(".modal-content");
+
+const form = document.querySelector(".form");
+
 const productsDOM = document.querySelector(".products-center");
 
 // cart
@@ -26,33 +31,10 @@ let cart = [];
 
 // checkout items
 
-let checkoutItems = [];
+let checkout = [];
 
 // buttons
 let buttonDOM = [];
-
-// Get the button that opens the modal
-let btn = document.getElementById("myBtn");
-
-// Get the <span> element that closes the modal
-let span = document.getElementsByClassName("close")[0];
-
-// When the user clicks on the button, open the modal
-btn.onclick = function() {
-  modal.style.display = "block";
-};
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
-};
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target === modal) {
-    modal.style.display = "none";
-  }
-};
 
 // getting the products
 class Products {
@@ -118,13 +100,17 @@ class UI {
         event.target.disabled = true;
         let cartItem = { ...Storage.getProduct(id), amount: 1 };
         cart = [...cart, cartItem];
+
+        // let checkoutItem = { ...Storage.getCart(id), amount: 1 };
+        // checkout = [...checkout, checkoutItem];
+
         Storage.saveCart(cart);
-        checkoutItems = cart;
-        Storage.saveCheckoutItems(checkoutItems);
+        // Storage.saveCheckoutItems(checkout);
         this.setCartValues(cart);
-        this.setCheckoutValues(checkoutItems);
+        // this.setCheckoutValues(checkout);
+
         this.addCartItem(cartItem);
-        this.addCheckoutItem(checkoutItem);
+        // this.addCheckoutItem(cart);
 
         this.showCart();
       });
@@ -142,17 +128,17 @@ class UI {
     cartItems.innerText = itemsTotal;
   }
 
-  setCheckoutValues(checkoutItems) {
-    let tempTotal = 0;
-    let itemsTotal = 0;
-    checkoutItems.map(item => {
-      tempTotal += item.price * item.amount;
-      itemsTotal += item.amount;
-    });
-    checkoutPrice.innerText = parseFloat(tempTotal.toFixed(2));
-    checkoutItem.innerText = itemsTotal;
-    // this.addCheckoutItem(checkoutItems);
-  }
+  // setCheckoutValues(checkout) {
+  //   let tempTotal = 0;
+  //   let itemsTotal = 0;
+  //   checkout.map(item => {
+  //     tempTotal += item.price * item.amount;
+  //     itemsTotal += item.amount;
+  //   });
+  //   checkoutTotal.innerText = parseFloat(tempTotal.toFixed(2));
+  //   checkoutItems.innerText = itemsTotal;
+  //   // this.addCheckoutItem(checkoutItems);
+  // }
 
   addCartItem(item) {
     const div = document.createElement("div");
@@ -169,18 +155,39 @@ class UI {
                         <i class="fas fa-chevron-down" data-id=${item.id}></i>
                     </div>`;
     cartContent.appendChild(div);
+
+    const checkout = document.createElement("div");
+    checkout.classList.add("cart-item");
+    checkout.innerHTML = ` <img src=${item.image} alt="product">
+                    <div>
+                        <h4>${item.title}</h4>
+                        <h5>$${item.price}</h5>
+                        
+                    </div>
+                    <div>
+                        
+                        <p data-id=${item.id} class="item-amount">${item.amount}</p>
+                    </div>
+                   `;
+    checkoutItems.appendChild(checkout);
   }
 
-  addCheckoutItem(item) {
-    const div = document.createElement("div");
-    div.classList.add("checkout-item");
-    div.innerHTML = `
-      <p>${item.title}<span>${item.amount}</span><span class="price">$ ${item.price}</span></p>
-      <hr>
-      <p>Total <span class="price" style="color:black"><b>$ ${item.tempTotal}</b></span></p>
-    `;
-    checkoutItem.appendChild(div);
-  }
+  // addCheckoutItem(item) {
+  //   const div = document.createElement("div");
+  //   div.classList.add("cart-item");
+  //   div.innerHTML = `
+  //                   <div>
+  //                       <h4>${item.title}</h4>
+  //                       <h5>$${item.price}</h5>
+  //                       <span class="remove-item" data-id=${item.id}>remove</span>
+  //                   </div>
+  //                   <div>
+  //                       <i class="fas fa-chevron-up" data-id=${item.id}></i>
+  //                       <p class="item-amount">${item.amount}</p>
+  //                       <i class="fas fa-chevron-down" data-id=${item.id}></i>
+  //                   </div>`;
+  //   checkoutItems.appendChild(div);
+  // }
 
   showCart() {
     cartOverlay.classList.add("transparentBcg");
@@ -189,22 +196,44 @@ class UI {
 
   setupAPP() {
     cart = Storage.getCart();
-    checkoutItems = Storage.getCheckoutItems();
+    // checkout = Storage.getCheckoutItems();
     this.setCartValues(cart);
-    this.setCheckoutValues(checkoutItems);
+    // this.setCheckoutValues(checkout);
     this.populateCart(cart);
-    this.populateCheckout(checkoutItems);
+    // this.populateCheckout(checkout);
     cartBtn.addEventListener("click", this.showCart);
     closeCartBtn.addEventListener("click", this.hideCart);
+    // Get the button that opens the modal
+    let btn = document.getElementById("myBtn");
+
+    // Get the <span> element that closes the modal
+    let span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks on the button, open the modal
+    btn.onclick = () => {
+      modal.style.display = "block";
+    };
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = () => {
+      modal.style.display = "none";
+    };
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = event => {
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    };
   }
 
   populateCart(cart) {
     cart.forEach(item => this.addCartItem(item));
   }
 
-  populateCheckout(checkoutItems) {
-    checkoutItems.forEach(item => this.addCheckoutItem(item));
-  }
+  // populateCheckout(checkout) {
+  //   checkout.forEach(item => this.addCheckoutItem(item));
+  // }
 
   hideCart() {
     cartOverlay.classList.remove("transparentBcg");
@@ -246,33 +275,65 @@ class UI {
       }
     });
 
-    Storage.getCheckoutItems(checkoutItems);
-    this.setCheckoutValues(checkoutItems);
+    // checkoutItems.addEventListener("click", event => {
+    //   if (event.target.classList.contains("remove-item")) {
+    //     let removeItem = event.target;
+    //     let id = removeItem.dataset.id;
+    //     checkoutItems.removeChild(removeItem.parentElement.parentElement);
+    //     this.removeItem(id);
+    //   } else if (event.target.classList.contains("fa-chevron-up")) {
+    //     let addAmount = event.target;
+    //     let id = addAmount.dataset.id;
+    //     let tempItem = cart.find(item => item.id === id);
+    //     tempItem.amount = tempItem.amount + 1;
+    //     Storage.saveCart(cart);
+    //     this.setCartValues(cart);
+    //     addAmount.nextElementSibling.innerText = tempItem.amount;
+    //   } else if (event.target.classList.contains("fa-chevron-down")) {
+    //     let lowerAmount = event.target;
+    //     let id = lowerAmount.dataset.id;
+    //     let tempItem = cart.find(item => item.id === id);
+    //     tempItem.amount = tempItem.amount - 1;
+    //     if (tempItem.amount > 0) {
+    //       Storage.saveCart(cart);
+    //       this.setCartValues(cart);
+    //       lowerAmount.previousElementSibling.innerText = tempItem.amount;
+    //     } else {
+    //       checkoutItems.removeChild(lowerAmount.parentElement.parentElement);
+    //       this.removeItem(id);
+    //     }
+    //   }
+    // });
+    // Storage.getCheckoutItems(checkout);
+    // this.setCheckoutValues(checkout);
   }
 
   clearCart() {
     let cartItems = cart.map(item => item.id);
-    let checkoutItem = checkoutItems.map(item => item.id);
+    // let checkoutItems = checkout.map(item => item.id);
+
     cartItems.forEach(id => this.removeItem(id));
     console.log(cartContent.children);
     while (cartContent.children.length > 0) {
       cartContent.removeChild(cartContent.children[0]);
     }
-    checkoutItem.forEach(id => this.removeItem(id));
-    console.log(checkoutItem.children);
-    while (checkoutItem.children.length > 0) {
-      checkoutItem.removeChild(checkoutItem.children[0]);
-    }
+
+    // checkoutItems.forEach(id => this.removeItem(id));
+    // console.log(checkoutItems.children);
+    // while (checkoutItems.children.length > 0) {
+    //   checkoutItems.removeChild(checkoutItems.children[0]);
+    // }
+
     this.hideCart();
   }
 
   removeItem(id) {
     cart = cart.filter(item => item.id !== id);
-    checkoutItems = checkoutItems.filter(item => item.id !== id);
+    // checkout = checkout.filter(item => item.id !== id);
     this.setCartValues(cart);
-    this.setCheckoutValues(checkoutItems);
+    // this.setCheckoutValues(checkout);
     Storage.saveCart(cart);
-    Storage.saveCheckoutItems(checkoutItems);
+    // Storage.saveCheckoutItems(checkout);
     let button = this.getSingleButton(id);
     button.disabled = false;
     button.innerHTML = `<i class="fas fa-shopping-cart"></i>add to cart`;
@@ -303,15 +364,15 @@ class Storage {
       : [];
   }
 
-  static saveCheckoutItems(checkoutItems) {
-    localStorage.setItem("checkoutItems", JSON.stringify(checkoutItems));
-  }
+  // static saveCheckoutItems(checkout) {
+  //   localStorage.setItem("checkout", JSON.stringify(checkout));
+  // }
 
-  static getCheckoutItems() {
-    return localStorage.getItem("checkoutItems")
-      ? JSON.parse(localStorage.getItem("checkoutItems"))
-      : [];
-  }
+  // static getCheckoutItems() {
+  //   return localStorage.getItem("checkout")
+  //     ? JSON.parse(localStorage.getItem("checkout"))
+  //     : [];
+  // }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
