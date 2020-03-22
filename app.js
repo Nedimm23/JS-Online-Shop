@@ -14,11 +14,19 @@ const cartOverlay = document.querySelector(".cart-overlay");
 const cartItems = document.querySelector(".cart-items");
 const cartTotal = document.querySelector(".cart-total");
 const cartContent = document.querySelector(".cart-content");
-const productsDOM = document.querySelector(".products-center");
+const checkoutItem = document.querySelector(".checkout-items");
+const checkoutPrice = document.querySelector(".price");
+const modalContent = document.querySelector(".modal-content");
 const modal = document.getElementById("myModal");
+const checkoutDOM = document.querySelector(".modal");
+const productsDOM = document.querySelector(".products-center");
 
 // cart
 let cart = [];
+
+// checkout items
+
+let checkoutItems = [];
 
 // buttons
 let buttonDOM = [];
@@ -109,11 +117,15 @@ class UI {
         event.target.innerText = "In Cart";
         event.target.disabled = true;
         let cartItem = { ...Storage.getProduct(id), amount: 1 };
-        console.log(cartItem);
         cart = [...cart, cartItem];
         Storage.saveCart(cart);
+        checkoutItems = cart;
+        Storage.saveCheckoutItems(checkoutItems);
         this.setCartValues(cart);
+        this.setCheckoutValues(checkoutItems);
         this.addCartItem(cartItem);
+        this.addCheckoutItem(checkoutItem);
+
         this.showCart();
       });
     });
@@ -128,6 +140,18 @@ class UI {
     });
     cartTotal.innerText = parseFloat(tempTotal.toFixed(2));
     cartItems.innerText = itemsTotal;
+  }
+
+  setCheckoutValues(checkoutItems) {
+    let tempTotal = 0;
+    let itemsTotal = 0;
+    checkoutItems.map(item => {
+      tempTotal += item.price * item.amount;
+      itemsTotal += item.amount;
+    });
+    checkoutPrice.innerText = parseFloat(tempTotal.toFixed(2));
+    checkoutItem.innerText = itemsTotal;
+    // this.addCheckoutItem(checkoutItems);
   }
 
   addCartItem(item) {
@@ -147,6 +171,17 @@ class UI {
     cartContent.appendChild(div);
   }
 
+  addCheckoutItem(item) {
+    const div = document.createElement("div");
+    div.classList.add("checkout-item");
+    div.innerHTML = `
+      <p>${item.title}<span>${item.amount}</span><span class="price">$ ${item.price}</span></p>
+      <hr>
+      <p>Total <span class="price" style="color:black"><b>$ ${item.tempTotal}</b></span></p>
+    `;
+    checkoutItem.appendChild(div);
+  }
+
   showCart() {
     cartOverlay.classList.add("transparentBcg");
     cartDOM.classList.add("showCart");
@@ -154,14 +189,21 @@ class UI {
 
   setupAPP() {
     cart = Storage.getCart();
+    checkoutItems = Storage.getCheckoutItems();
     this.setCartValues(cart);
+    this.setCheckoutValues(checkoutItems);
     this.populateCart(cart);
+    this.populateCheckout(checkoutItems);
     cartBtn.addEventListener("click", this.showCart);
     closeCartBtn.addEventListener("click", this.hideCart);
   }
 
   populateCart(cart) {
     cart.forEach(item => this.addCartItem(item));
+  }
+
+  populateCheckout(checkoutItems) {
+    checkoutItems.forEach(item => this.addCheckoutItem(item));
   }
 
   hideCart() {
@@ -203,22 +245,34 @@ class UI {
         }
       }
     });
+
+    Storage.getCheckoutItems(checkoutItems);
+    this.setCheckoutValues(checkoutItems);
   }
 
   clearCart() {
     let cartItems = cart.map(item => item.id);
+    let checkoutItem = checkoutItems.map(item => item.id);
     cartItems.forEach(id => this.removeItem(id));
     console.log(cartContent.children);
     while (cartContent.children.length > 0) {
       cartContent.removeChild(cartContent.children[0]);
+    }
+    checkoutItem.forEach(id => this.removeItem(id));
+    console.log(checkoutItem.children);
+    while (checkoutItem.children.length > 0) {
+      checkoutItem.removeChild(checkoutItem.children[0]);
     }
     this.hideCart();
   }
 
   removeItem(id) {
     cart = cart.filter(item => item.id !== id);
+    checkoutItems = checkoutItems.filter(item => item.id !== id);
     this.setCartValues(cart);
+    this.setCheckoutValues(checkoutItems);
     Storage.saveCart(cart);
+    Storage.saveCheckoutItems(checkoutItems);
     let button = this.getSingleButton(id);
     button.disabled = false;
     button.innerHTML = `<i class="fas fa-shopping-cart"></i>add to cart`;
@@ -246,6 +300,16 @@ class Storage {
   static getCart() {
     return localStorage.getItem("cart")
       ? JSON.parse(localStorage.getItem("cart"))
+      : [];
+  }
+
+  static saveCheckoutItems(checkoutItems) {
+    localStorage.setItem("checkoutItems", JSON.stringify(checkoutItems));
+  }
+
+  static getCheckoutItems() {
+    return localStorage.getItem("checkoutItems")
+      ? JSON.parse(localStorage.getItem("checkoutItems"))
       : [];
   }
 }

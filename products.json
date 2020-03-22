@@ -3,65 +3,97 @@
     {
       "sys": { "id": "1" },
       "fields": {
-        "title": "queen panel bed",
-        "price": 10.99,
-        "image": { "fields": { "file": { "url": "./images/product-1.jpeg" } } }
+        "title": "Converse White Shoes",
+        "price": 65.75,
+        "image": { "fields": { "file": { "url": "./images/converse-2.jpeg" } } }
       }
     },
     {
       "sys": { "id": "2" },
       "fields": {
-        "title": "king panel bed",
-        "price": 12.99,
-        "image": { "fields": { "file": { "url": "./images/product-2.jpeg" } } }
+        "title": "Converse Black Old School Shoes",
+        "price": 39.99,
+        "image": { "fields": { "file": { "url": "./images/converse-1.jpeg" } } }
       }
     },
     {
       "sys": { "id": "3" },
       "fields": {
-        "title": "single panel bed",
-        "price": 12.99,
-        "image": { "fields": { "file": { "url": "./images/product-3.jpeg" } } }
+        "title": "Under Armour Black Shoes",
+        "price": 95.95,
+        "image": {
+          "fields": { "file": { "url": "./images/under-armour-1.jpeg" } }
+        }
       }
     },
     {
       "sys": { "id": "4" },
       "fields": {
-        "title": "twin panel bed",
-        "price": 22.99,
-        "image": { "fields": { "file": { "url": "./images/product-4.jpeg" } } }
+        "title": "Nike Black Shoes",
+        "price": 45.99,
+        "image": { "fields": { "file": { "url": "./images/nike-4.jpeg" } } }
       }
     },
     {
       "sys": { "id": "5" },
       "fields": {
-        "title": "fridge",
-        "price": 88.99,
-        "image": { "fields": { "file": { "url": "./images/product-5.jpeg" } } }
+        "title": "Nike Street Shoes",
+        "price": 69.85,
+        "image": { "fields": { "file": { "url": "./images/nike-3.jpeg" } } }
       }
     },
     {
       "sys": { "id": "6" },
       "fields": {
-        "title": "dresser",
-        "price": 32.99,
-        "image": { "fields": { "file": { "url": "./images/product-6.jpeg" } } }
+        "title": "Nike Old School Shoes",
+        "price": 99.99,
+        "image": { "fields": { "file": { "url": "./images/nike-2.jpeg" } } }
       }
     },
     {
       "sys": { "id": "7" },
       "fields": {
-        "title": "couch",
-        "price": 45.99,
-        "image": { "fields": { "file": { "url": "./images/product-7.jpeg" } } }
+        "title": "Nike Air Max Shoes",
+        "price": 125.55,
+        "image": { "fields": { "file": { "url": "./images/nike-1.jpeg" } } }
       }
     },
     {
       "sys": { "id": "8" },
       "fields": {
-        "title": "table",
-        "price": 33.99,
-        "image": { "fields": { "file": { "url": "./images/product-8.jpeg" } } }
+        "title": "Adidas Shoes With Green Lines",
+        "price": 58.99,
+        "image": { "fields": { "file": { "url": "./images/adidas-3.jpeg" } } }
+      }
+    },
+    {
+      "sys": { "id": "9" },
+      "fields": {
+        "title": "Adidas Black Shoes",
+        "price": 75.59,
+        "image": {
+          "fields": {
+            "file": {
+              "url": "./images/adidas-2.jpeg"
+            }
+          }
+        }
+      }
+    },
+    {
+      "sys": {
+        "id": "10"
+      },
+      "fields": {
+        "title": "Adidas White Shoes",
+        "price": 69.99,
+        "image": {
+          "fields": {
+            "file": {
+              "url": "./images/adidas-1.jpeg"
+            }
+          }
+        }
       }
     }
   ]
